@@ -9,20 +9,26 @@ namespace CA1
 {
     internal abstract class Event
     {
-        public string name;
-        public DateTime date;
-        public TimeOnly duration;
+        private int eventID;
+        private string name;
+        private DateTime date;
+        private int duration;
 
 
-        public Event(string name, DateTime date,TimeOnly duration)
+        public Event(int eventID, string name, DateTime date,int duration)
         {
+            this.eventID = eventID;
             this.duration = duration;
             this.name = name;
             this.date = date;        
         }
+        public int EventID
+        {
+            get { return eventID; }
+        }
 
         public string Name
-            {
+        {
              get { return name; }
              set { value =  name; }
         }

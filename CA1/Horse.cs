@@ -12,7 +12,7 @@ namespace CA1
         private String dateOfBirth;
         private int age;
         private int horseID;
-        private static int nextID;
+        private static int nextID = 0;
 
         public String Name
         {

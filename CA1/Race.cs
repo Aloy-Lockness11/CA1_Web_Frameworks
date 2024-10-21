@@ -3,31 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace CA1
 {
     internal class Race:Event
     {
-        private String locations;
-        public List<string> horses;
+        private static int nxtRaceID = 0;
+        private List<Horse> horses;
 
-        
-
-        public String Name
+        public Race(string name, DateTime date, int duration) : base(nxtRaceID, name, date, duration)
         {
-            get { return name; }
-            set { name = value; }
+            nxtRaceID += 1;
         }
-
-        public String Location
-        {
-            get { return locations; }
-            set { locations = value; }
-        }
-
-        public Race(string name, DateTime date, TimeOnly duration,String locations) : base(name, date, duration)
-        {
-
+        public Race(DateTime date, int duration) : base(nxtRaceID, "Race"+nxtRaceID, date, duration)
+        { 
+            nxtRaceID += 1;
         }
 
         public bool menu()
