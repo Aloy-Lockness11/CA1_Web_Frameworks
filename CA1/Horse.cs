@@ -12,7 +12,8 @@ namespace CA1
         private String dateOfBirth;
         private int age;
         private int horseID;
-        private static int nextID;
+        private static int nxtHorseID = 1;
+
 
         public String Name
         {
@@ -37,12 +38,23 @@ namespace CA1
             get { return horseID; }
         }
 
-        public Horse(string name, string dateOfBirth, int age, int horseID)
+        public Horse(string name, string dateOfBirth, int age)
         {
             this.name = name;
             this.dateOfBirth = dateOfBirth;
             this.age = age;
-            this.horseID = horseID;
+            this.horseID = nxtHorseID;
+            nxtHorseID += 1;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

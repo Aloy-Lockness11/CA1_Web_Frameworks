@@ -3,36 +3,49 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+
 
 namespace CA1
 {
     internal class Race:Event
     {
-        private String locations;
-        public List<string> horses;
+        private static int nxtRaceID = 1;
+        private List<Horse> horses;
 
-        
-
-        public String Name
+        public List<Horse> Horses
         {
-            get { return name; }
-            set { name = value; }
+            get { return horses; }
         }
 
-        public String Location
+        public Race(string name, DateTime date, int duration) : base(nxtRaceID, name, date, duration)
         {
-            get { return locations; }
-            set { locations = value; }
+            horses = new List<Horse>();
+            nxtRaceID += 1;
         }
-
-        public Race(string name, DateTime date, TimeOnly duration,String locations) : base(name, date, duration)
+        public Race(DateTime date, int duration) : base(nxtRaceID, "Race"+nxtRaceID, date, duration)
         {
-
+            horses = new List<Horse>();
+            nxtRaceID += 1;
         }
-
-        public bool menu()
+        public void addHorse(Horse horse)
         {
-            return false;
+            horses.Add(horse);
+        }
+        public void removeHorse(Horse horse)
+        {
+            horses.Remove(horse);
+        }
+        public void displayHorses()
+        {
+            if (horses.Count == 0)
+            {
+                utils.GraphicsDisplay.DisplayMessage("No Horses");
+            }
+            else
+            {
+                utils.GraphicsDisplay.DisplayHorses(horses);
+            }
         }
 
 
