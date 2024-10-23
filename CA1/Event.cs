@@ -39,7 +39,9 @@ namespace CA1
             set { value = date; }
         }
 
-        public TimeOnly Duration
+        //Duration In minutes
+
+        public int Duration
         {
             get { return duration; }
             set { value = duration; }

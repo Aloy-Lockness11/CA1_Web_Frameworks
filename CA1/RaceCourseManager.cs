@@ -10,24 +10,28 @@ namespace CA1
 {
     internal class RaceCourseManager : User
     {
-        
+        private static int nxtRaceCourseManagerID = 0;
 
-        public RaceCourseManager(string name, string id, string email, string username, string password) : base(name, id, email, username, password)
+        public RaceCourseManager(string name, string email, string username, string password) : base(name, nxtRaceCourseManagerID, email, username, password)
         {
-
+            nxtRaceCourseManagerID += 1;
         }
         public override void DisplayMenuOptions()
         {
-            Console.WriteLine("+=========================================+");
-            Console.WriteLine("|       RaceCourse Manager Menu           |");
-            Console.WriteLine("+=========================================+");
-            Console.WriteLine("|                                         |");
-            Console.WriteLine("|1.Create Race DAY Event                  |");
-            Console.WriteLine("|2.Create Races for Selected Event        |");
-            Console.WriteLine("|3.Display All Event Days                 |");
-            Console.WriteLine("|4.Display Events on Selected Day         |");
-            Console.WriteLine("|                                         |");
-            Console.WriteLine("+=========================================+");
+            Console.WriteLine(
+                "+=========================================+\n" +
+                "|         RaceCourse Manager Menu         |\n" +
+                "+=========================================+\n" +
+                "|                                         |\n" +
+                "|1.Create Race DAY Event                  |\n" +
+                "|2.Create Races for Selected Event        |\n" +
+                "|3.Display All Event Days                 |\n" +
+                "|4.Display Events on Selected Day         |\n" +
+                "|5.Add Test Data                          |\n" +
+                "|6.Exit                                   |\n" +
+                "|                                         |\n" +
+                "+=========================================+"
+            );
         }
         public override bool Menu()
         {
@@ -36,6 +40,10 @@ namespace CA1
 
             while (!isExist)
             {
+                DisplayMenuOptions();
+
+                Console.WriteLine("\n Enter Menu Choice");
+                menueOption = utils.Validator.validInt(1, 6, "Enter Right Menu Option Please");
                 switch (menueOption)
                 {
                     case 1:
@@ -48,37 +56,21 @@ namespace CA1
                         displayAllEventDays();
                         break;
                     case 4:
-                        displayAllRacesPresentOnSelectedDay();
+                        DisplayAllRacesPresentOnSelectedDay();
+                        break;
+                    case 5:
+                        addTestData();
+                        break;
+                    case 6:
                         isExist = true;
                         break;
                     default:
-                        Console.WriteLine("+===============================+");
-                        Console.WriteLine("|Enter Right Menu Option Please |");
-                        Console.WriteLine("+===============================+");
+                        utils.GraphicsDisplay.DisplayErrorMessage("Enter Right Menu Option Please");
                         break;
 
                 }
             }
             return false;
-        }
-
-        private void displayAllRacesPresentOnSelectedDay()
-        {
-
-            string message = "Please Select a Event by Event ID:";
-            if (raceEventList.Count == 0)
-            {
-                Console.WriteLine("+--------------------------------------------+");
-                Console.WriteLine("No Event Days Available");
-                Console.WriteLine("+--------------------------------------------+");
-            }
-            else
-            {
-                Console.WriteLine("+--------------------------------------------+");
-                Console.WriteLine(message);
-                int eventID = utils.Validator.validInt(0, raceEventList.Count, $"Error :{message} And try Again !!");
-                RaceEventList[eventID].displayRaces();
-            }
         }
 
         private void displayAllEventDays()
@@ -91,29 +83,31 @@ namespace CA1
             int durationMin = 15;
             int durationMax = 61;
             Race race;
-            string message = "Please Select a Event by Event ID:";
-            string messageNameInput = "Please Enter a Name With Alphabets only 30 characters :";
+            string message = "Please Select a Event by Event ID (Should exist in Events):";
+            string messageNameInput = "Please Enter a Name With Alphabets only 30 characters or leave empty to Default :";
             string messageDateInput = "Please Enter a Date and Time in the format dd/mm/yyyy hh:ss :";
             string messageDurationInput = $"Please Enter a Duration in minutes between {durationMin} and {durationMax} :";
             if (raceEventList.Count == 0)
             {
-                Console.WriteLine("+--------------------------------------------+");
-                Console.WriteLine("No Event Days Available");
-                Console.WriteLine("+--------------------------------------------+");
+                utils.GraphicsDisplay.DisplayErrorMessage("No Event Days Available");
             }
             else
             {
                 Console.WriteLine("+--------------------------------------------+");
                 Console.WriteLine(message);
-                int eventID = utils.Validator.validInt(0, raceEventList.Count, $"Error :{message} And try Again !!");
-                while (true)
+                int eventListIndex = utils.Validator.validIndexID(RaceEventList, "error:" + message + " and try again!! ");
+                bool isValid = false;
+                while (!isValid)
                 {
                     try
                     {
+                        Console.WriteLine("+--------------------------------------------+");
                         Console.WriteLine(messageNameInput);
-                        string name = utils.Validator.validString("error:" + messageNameInput + " and try again!! ", @"^[a-zA-Z]{1,30}$");
+                        string name = utils.Validator.validString("error:" + messageNameInput + " and try again!! ", @"^[a-zA-Z\s]{0,30}$");
+                        Console.WriteLine("+--------------------------------------------+");
                         Console.WriteLine(messageDateInput);
                         DateTime date = utils.Validator.validDate("error:" + messageDateInput + " and try again!! ", @"^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/([0-9]{4}) ([01][0-9]|2[0-3]):([0-5][0-9])$");
+                        Console.WriteLine("+--------------------------------------------+");
                         Console.WriteLine(messageDurationInput);
                         int duration = utils.Validator.validInt(durationMin, durationMax, "error:" + messageDurationInput + " and try again!! ");
                         if (name.Length == 0)
@@ -124,17 +118,16 @@ namespace CA1
                         {
                             race = new Race(name, date, duration);
                         }
-                        RaceEventList[eventID].addRace(race);
-                        Console.WriteLine("==============================================");
-                        Console.WriteLine("Race Created and Added to Event Successfully");
-                        Console.WriteLine("==============================================");
+                        RaceEventList[eventListIndex].addRace(race);
+                        utils.GraphicsDisplay.DisplayMessage("Race Created Successfully");
+                        isValid = true;
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine("==============================================");
-                        Console.WriteLine(e.Message);
-                        Console.WriteLine("Error Occured while Creating and adding race to event Try again Please");
-                        Console.WriteLine("==============================================");
+                        utils.GraphicsDisplay.DisplayErrorMessage(
+                            $"{e.Message}\n" +
+                            "Error Occurred while Creating and Adding Race. Try again please.\n" 
+                            );
                     }
 
                 }
@@ -147,7 +140,7 @@ namespace CA1
             int durationMax = 360;
             string messageNameInput = "Please Enter a Name With Alphabets only 30 characters :";
             string messageLocationInput = "Please Enter location in eir Code format :";
-            string messageDateInput = "Please Enter a Date and Time in the format dd/mm/yyyy hh:ss :";
+            string messageDateInput = "Please Enter a Date and Time in the format dd/mm/yyyy hh:mm :";
             string messageDurationInput = $"Please Enter a Duration in minutes between {durationMin} and {durationMax} :";
             bool isValid = false;
             while (!isValid)
@@ -156,26 +149,29 @@ namespace CA1
                 {
                     Console.WriteLine("+---------------------------------------------------------------+");
                     Console.WriteLine(messageNameInput);
-                    string name = utils.Validator.validString("error:"+ messageNameInput +" and try again!! ", @"^[a-zA-Z]{1,30}$");
+                    string name = utils.Validator.validString("error:"+ messageNameInput +" And try again!! ", @"^[a-zA-Z\s]{1,30}$");
+                    Console.WriteLine("+--------------------------------------------+");
                     Console.WriteLine(messageLocationInput);
-                    string location = utils.Validator.validString("error:" + messageLocationInput + " and try again!! ", @"^[A-Za-z0-9]{3} [A-Za-z0-9]{4}$");
+                    string location = utils.Validator.validString("error:" + messageLocationInput + " And try again!! ", @"^[A-Za-z0-9]{3} [A-Za-z0-9]{4}$");
+                    Console.WriteLine("+--------------------------------------------+");
                     Console.WriteLine(messageDateInput);
-                    DateTime date = utils.Validator.validDate("error:" + messageDateInput + " and try again!! ", @"^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/([0-9]{4}) ([01][0-9]|2[0-3]):([0-5][0-9])$");
+                    DateTime date = utils.Validator.validDate("error:" + messageDateInput + " And try again!! ", @"^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/([0-9]{4}) ([01][0-9]|2[0-3]):([0-5][0-9])$");
+                    Console.WriteLine("+--------------------------------------------+");
                     Console.WriteLine(messageDurationInput);
                     int duration = utils.Validator.validInt(durationMin,durationMax,"error:" + messageDurationInput + " and try again!! ");
                     RaceDayEvent raceDayEvent = new RaceDayEvent(name, location, date, duration);
                     AddRace(raceDayEvent);
-                    Console.WriteLine("==============================================");
-                    Console.WriteLine("race event created successfully");
-                    Console.WriteLine("==============================================");
+
+                    utils.GraphicsDisplay.DisplayMessage(name + " Event Created Successfully");
+
                     isValid = true;
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("==============================================");
-                    Console.WriteLine(e.Message);
-                    Console.WriteLine("Error Occured while Creating and Adding Race event Try again Please");
-                    Console.WriteLine("==============================================");
+                    utils.GraphicsDisplay.DisplayErrorMessage(
+                        $"{e.Message}\n" +
+                        "Error Occurred while Creating and Adding Event. Try again please.\n"
+                    );
                 }
 
 

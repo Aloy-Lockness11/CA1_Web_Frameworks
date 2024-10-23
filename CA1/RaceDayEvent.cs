@@ -8,7 +8,7 @@ namespace CA1
 {
     internal class RaceDayEvent : Event
     {
-        private static int nextID = 0;
+        private static int nextID = 1;
         private String location;
         private List<Race> races = new List<Race>();
 
@@ -16,6 +16,10 @@ namespace CA1
         {
             get { return location; }
             set { location = value; }
+        }
+        public List<Race> Races
+        {
+            get { return races; }
         }
         public RaceDayEvent(string name, String Location, DateTime date, int duration) : base(nextID, name, date, duration)
         {
@@ -27,23 +31,17 @@ namespace CA1
         {
             if (races.Count == 0)
             {
-                Console.WriteLine("+--------------------------------------------+");
-                Console.WriteLine("No Races");
-                Console.WriteLine("+--------------------------------------------+");
+                utils.GraphicsDisplay.DisplayMessage("No Races");
             }
             else
             {
-                foreach (Race race in races)
-                {
-                    Console.WriteLine("+--------------------------------------------+");
-                    Console.WriteLine($"{race.EventID} | {race.Name} | {race.Date} | {race.Duration}");
-                    Console.WriteLine("+--------------------------------------------+");
-                }
+                utils.GraphicsDisplay.DisplayRaces(races);
             }
         }
         public void addRace(Race race)
         {
             this.races.Add(race);
         }
+
     }
 }
