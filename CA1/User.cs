@@ -53,6 +53,7 @@ namespace CA1
 
 
         protected User(string name, int id, string email, string username, string password)
+
         {
             this.name = name;
             this.id = id;
@@ -198,6 +199,6 @@ namespace CA1
 
         public abstract bool Menu();
         public abstract void DisplayMenuOptions();
-    
+
     }
 }

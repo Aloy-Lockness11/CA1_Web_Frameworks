@@ -14,6 +14,7 @@ namespace CA1
         private int horseID;
         private static int nxtHorseID = 1;
 
+
         public String Name
         {
             get { return name; }

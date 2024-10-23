@@ -39,6 +39,7 @@ namespace CA1
             set { value = date; }
         }
 
+
         //Duration In minutes
 
         public int Duration
